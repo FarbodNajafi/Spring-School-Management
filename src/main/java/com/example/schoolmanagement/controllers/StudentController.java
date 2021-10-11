@@ -10,6 +10,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,6 +33,7 @@ public class StudentController {
     }
 
     @GetMapping("")
+    @PreAuthorize("hasAuthority('student:read')")
     public CollectionModel<EntityModel<Student>> all() {
         List<EntityModel<Student>> students =
                 studentService.getAllStudents()
@@ -46,6 +48,7 @@ public class StudentController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
     public EntityModel<Student> one(@PathVariable UUID id) {
         Student student = studentService
                 .getById(id)
@@ -56,12 +59,8 @@ public class StudentController {
         return assembler.toModel(student);
     }
 
-//    @PostMapping("/")
-//    Student newStudent(@RequestBody Student student) {
-//        return studentService.save(student);
-//    }
-
     @PostMapping("/")
+    @PreAuthorize("hasAuthority('student:write') or hasAnyRole('ROLE_ADMIN')")
     ResponseEntity<?> newStudent(@RequestBody Student newStudent) {
         long count = studentService.count() + 1;
         newStudent.setStudentId(count);
@@ -75,24 +74,9 @@ public class StudentController {
                 .body(entityModel);
     }
 
-//    @PutMapping("/{id}/")
-//    Student replaceStudent(@RequestBody Student newStudent, @PathVariable Long id) {
-//        return studentService.getById(id)
-//                .map(student -> {
-//                    student.setFirstName(newStudent.getFirstName());
-//                    student.setLastName(newStudent.getLastName());
-//                    student.setNationalId(newStudent.getNationalId());
-//                    student.setCourses(newStudent.getCourses());
-//                    return studentService.save(student);
-//                })
-//                .orElseGet(() -> {
-//                    newStudent.setId(id);
-//                    return studentService.save(newStudent);
-//                });
-//
-//    }
 
     @PutMapping("/{id}/")
+    @PreAuthorize("hasAuthority('student:write') or hasAnyRole('ROLE_ADMIN')")
     ResponseEntity<?> replaceStudent(@RequestBody Student newStudent, @PathVariable UUID id) {
         long count = studentService.count() + 1;
         Student updatedStudent = studentService.getById(id)
@@ -120,18 +104,15 @@ public class StudentController {
                 .body(entityModel);
     }
 
-//    @DeleteMapping("/{id}")
-//    void deleteStudent(@PathVariable Long id) {
-//        studentService.deleteById(id);
-//    }
-
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('student:delete') or hasRole('ROLE_ADMIN')")
     ResponseEntity<?> deleteStudent(@PathVariable UUID id) {
         studentService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{id}/courses/")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_STAFF')")
     ResponseEntity<?> addCourse(@RequestBody Course newCourse, @PathVariable UUID id) {
 
         Student student = studentService
