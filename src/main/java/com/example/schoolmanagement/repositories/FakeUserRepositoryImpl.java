@@ -1,6 +1,6 @@
 package com.example.schoolmanagement.repositories;
 
-import com.example.schoolmanagement.entities.User;
+import com.example.schoolmanagement.entities.CustomUserDetails;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,16 +21,16 @@ public class FakeUserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> getUserByUsername(String username) {
+    public Optional<CustomUserDetails> getUserByUsername(String username) {
         return getUsers()
                 .stream()
-                .filter(user -> username.equals(user.getUsername()))
+                .filter(customUserDetails -> username.equals(customUserDetails.getUsername()))
                 .findFirst();
     }
 
-    private List<User> getUsers() {
-        List<User> users = Lists.newArrayList(
-                new User("admin",
+    private List<CustomUserDetails> getUsers() {
+        List<CustomUserDetails> customUserDetails = Lists.newArrayList(
+                new CustomUserDetails("admin",
                         passwordEncoder.encode("Testing321"),
                         ADMIN.getGrantedAuthorities(),
                         true,
@@ -38,7 +38,7 @@ public class FakeUserRepositoryImpl implements UserRepository {
                         true,
                         true
                 ),
-                new User("staff",
+                new CustomUserDetails("staff",
                         passwordEncoder.encode("Testing321"),
                         STAFF.getGrantedAuthorities(),
                         true,
@@ -46,7 +46,7 @@ public class FakeUserRepositoryImpl implements UserRepository {
                         true,
                         true
                 ),
-                new User("prof",
+                new CustomUserDetails("prof",
                         passwordEncoder.encode("Testing321"),
                         PROFESSOR.getGrantedAuthorities(),
                         true,
@@ -54,7 +54,7 @@ public class FakeUserRepositoryImpl implements UserRepository {
                         true,
                         true
                 ),
-                new User("student",
+                new CustomUserDetails("student",
                         passwordEncoder.encode("Testing321"),
                         STUDENT.getGrantedAuthorities(),
                         true,
@@ -63,6 +63,6 @@ public class FakeUserRepositoryImpl implements UserRepository {
                         true
                 )
         );
-        return users;
+        return customUserDetails;
     }
 }

@@ -1,10 +1,9 @@
 package com.example.schoolmanagement.repositories;
 
-import com.example.schoolmanagement.entities.User;
-import org.springframework.stereotype.Repository;
+import com.example.schoolmanagement.entities.CustomUserDetails;
 
 import java.util.Optional;
 
 public interface UserRepository {
-    Optional<User> getUserByUsername(String username);
+    Optional<CustomUserDetails> getUserByUsername(String username);
 }

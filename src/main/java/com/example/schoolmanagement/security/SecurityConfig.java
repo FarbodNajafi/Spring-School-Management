@@ -53,7 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new JwtUsernamePasswordAuthenticationFilter(authenticationManager()))
                 .addFilterAfter(new JwtTokenVerifier(), JwtUsernamePasswordAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
+                .antMatchers("/", "/api-docs*", "/swagger*", "/swagger*/**").permitAll()
                 .anyRequest()
                 .authenticated();
 
@@ -62,19 +62,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //    @Override
 //    @Bean
 //    protected UserDetailsService userDetailsService() {
-//        UserDetails hawtsauce = User.builder()
+//        CustomUserDetails hawtsauce = CustomUserDetails.builder()
 //                .username("hawtsauce")
 //                .password(passwordEncoder.encode("Testing321"))
 //                .authorities(STUDENT.getGrantedAuthorities())
 //                .build();
 //
-//        UserDetails admin = User.builder()
+//        CustomUserDetails admin = CustomUserDetails.builder()
 //                .username("admin")
 //                .password(passwordEncoder.encode("Testing321"))
 //                .authorities(ADMIN.getGrantedAuthorities())
 //                .build();
 //
-//        UserDetails staff = User.builder()
+//        CustomUserDetails staff = CustomUserDetails.builder()
 //                .username("staff")
 //                .password(passwordEncoder.encode("Testing321"))
 //                .authorities(STAFF.getGrantedAuthorities())
