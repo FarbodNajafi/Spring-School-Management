@@ -12,7 +12,7 @@ import java.util.Optional;
 import static com.example.schoolmanagement.security.UserRole.*;
 
 @Repository("fake")
-public class FakeUserRepositoryImpl implements UserRepository {
+public class FakeUserRepositoryImpl implements FakeUserRepository {
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -29,7 +29,7 @@ public class FakeUserRepositoryImpl implements UserRepository {
     }
 
     private List<CustomUserDetails> getUsers() {
-        List<CustomUserDetails> customUserDetails = Lists.newArrayList(
+        return Lists.newArrayList(
                 new CustomUserDetails("admin",
                         passwordEncoder.encode("Testing321"),
                         ADMIN.getGrantedAuthorities(),
@@ -63,6 +63,5 @@ public class FakeUserRepositoryImpl implements UserRepository {
                         true
                 )
         );
-        return customUserDetails;
     }
 }
