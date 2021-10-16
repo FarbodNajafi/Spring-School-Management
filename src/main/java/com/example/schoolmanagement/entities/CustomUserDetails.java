@@ -1,10 +1,12 @@
 package com.example.schoolmanagement.entities;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.Entity;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 
 public class CustomUserDetails implements UserDetails {
@@ -22,14 +24,26 @@ public class CustomUserDetails implements UserDetails {
                              boolean isAccountNonExpired,
                              boolean isAccountNonLocked,
                              boolean isCredentialsNonExpired,
-                             boolean isEnabled) {
-        this.grantedAuthorities = grantedAuthorities;
-        this.password = password;
+                             boolean isActive) {
         this.username = username;
+        this.password = password;
         this.isAccountNonExpired = isAccountNonExpired;
         this.isAccountNonLocked = isAccountNonLocked;
         this.isCredentialsNonExpired = isCredentialsNonExpired;
-        this.isEnabled = isEnabled;
+        this.isEnabled = isActive;
+        this.grantedAuthorities = grantedAuthorities;
+    }
+
+    public CustomUserDetails(User user) {
+        this.username = user.getUsername();
+        this.password = user.getPassword();
+        this.isAccountNonExpired = user.isAccountNonExpired();
+        this.isAccountNonLocked = user.isAccountNonLocked();
+        this.isCredentialsNonExpired = user.isCredentialsNonExpired();
+        this.isEnabled = user.isEnabled();
+        this.grantedAuthorities = Arrays.stream(user.getRoles().split(","))
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toSet());
     }
 
     @Override
